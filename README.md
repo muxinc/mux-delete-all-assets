@@ -13,3 +13,5 @@ After cloning this repo:
 * Edit script to include the desired environments Token and Secret. For more information see the [Mux-Python](https://github.com/muxinc/mux-python) repo. 
 * Run ```python deleteAllAssets.py```
 * It will calculate how many assets you have in that environment and after confirmation will delete one asset per second.
+
+![delete-all-assets-python](https://dl.dropboxusercontent.com/s/wb57idu4sktrpjf/mux-delete-all-assets-python.gif)
