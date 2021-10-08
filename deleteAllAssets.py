@@ -11,8 +11,8 @@ class color():
 
 # Authentication Setup
 configuration = mux_python.Configuration()
-configuration.username = 'e8a597d3-33ee-48e0-9076-266815d016be'
-configuration.password = 'WeecA/4XnBpSs9McQttyQddzF9psxgois6Z6ankjOS2TNfBiIIPs2HDajh2s8rvJSExbKPwnw3k'
+configuration.username = os.environ['MUX_TOKEN_ID']
+configuration.password = os.environ['MUX_TOKEN_SECRET']
 
 # API Client Initialization
 assets_api = mux_python.AssetsApi(mux_python.ApiClient(configuration))
