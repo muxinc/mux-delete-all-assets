@@ -1,66 +1,61 @@
-#!/bin/bash
+import mux_python
+from mux_python.rest import ApiException
+import time
 
-MUX_TOKEN_ID=''
-MUX_TOKEN_SECRET=''
+class color():
+    BOLD = '\033[1m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    GREEN = '\033[92m' 
+    END = '\033[0m'
 
-# finds full path to jq. If not present, echo Link to download
-jqPath=$(which jq)
-if [[ $? -eq 1 ]]; then 
-    echo "Please install JQ"
-    echo "https://stedolan.github.io/jq/download/"
-    exit 1
-fi
+# Authentication Setup
+configuration = mux_python.Configuration()
+configuration.username = os.environ['MUX_TOKEN_ID']
+configuration.password = os.environ['MUX_TOKEN_SECRET']
 
-#array for all collected IDs
-allAssetIDs=('')
+# API Client Initialization
+assets_api = mux_python.AssetsApi(mux_python.ApiClient(configuration))
 
-LIMIT='50'
-PAGE='1'
+# A list of all assetIDs to be deleted
+listOfAllAssets = []
 
-getAssetID() {
-    assetJSON=$(curl --silent https://api.mux.com/video/v1/assets?limit=$LIMIT\&page=$PAGE \
-    -X GET \
-    -H "Content-Type: application/json" \
-    -u $MUX_TOKEN_ID:$MUX_TOKEN_SECRET | $jqPath .data[].id)
-}
 
-deleteAnAsset() {
-    #convert quoted asset
-    asset=$1; 
-    asset="${asset#?}"; #remove leading quote
-    asset="${asset%?}" #remove trailing quote
-    echo "Deleting asset: $asset";
-    curl https://api.mux.com/video/v1/assets/$asset \
-    -X DELETE \
-    -H "Content-Type: application/json" \
-    -u $MUX_TOKEN_ID:$MUX_TOKEN_SECRET; 
+# Collect all asset IDs
+currentPageNumber = 1
+while True:
+    list_assets_response = assets_api.list_assets(limit=25, page = currentPageNumber)
+    if len(list_assets_response.data) != 0:
+        for item in list_assets_response.data:
+            listOfAllAssets.append(item.id)
+    else:
+        break
+    currentPageNumber += 1
+
     
-    response=$?
-    if [[ $response -eq 0 ]]; then
-        printf "Asset Deleted ✅\n"
-    else
-        printf "Error 👎\n"
-    fi
-}
-   
-#get the first $limit amount
-getAssetID
-allAssetIDs+=$assetJSON #add to array
+while len(listOfAllAssets) > 0: #confirm you have assets to delete
 
-# Get amount of items to be deleted
-arrayCount=0
-for num in ${allAssetIDs[@]}; do let "arrayCount++"; done
-echo -e "Number of assets to be deleted: $arrayCount"
+    print(f"Are you sure you want to delete {color.BOLD}{color.RED} {len(listOfAllAssets)} {color.END} assets? [y/n]")
+    deleteAnAsset = input()
 
-# confirm deletion
-read -p "Are you sure you want to delete these assets? " -n 1 -r
-
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    exit 0
-else
-    printf "\n"
-    # Loop through asset array and delete
-    for asset in ${allAssetIDs[@]}; do
-        deleteAnAsset $asset
-    done
-fi
+    while deleteAnAsset.lower().strip() in ['y','n']:
+        if deleteAnAsset == 'n': 
+            exit(0)            
+        else:
+            for asset in listOfAllAssets:
+                print(f'{color.YELLOW}Deleting Asset ID:{color.END} {asset}')
+                asset = assets_api.delete_asset(asset)
+                if asset is None: #api returns "none" if successful
+                    print("Asset Deleted ✅")
+                    time.sleep(1)
+                else:
+                    print("Error") #error handling to be added
+                    exit(1)
+            else:
+                print(f"{color.GREEN}All deleted!{color.END}")
+                exit(0)
+    else: 
+        print("You must choose Y or N")
+else:
+    print("No assets in this environment to delete.")
+    exit(0)
