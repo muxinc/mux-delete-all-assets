@@ -15,4 +15,4 @@ After cloning this repo:
 
 **Currently set to delete only 50 assets at a time**
 
-![delete-all-assets-bash](https://dl.dropboxusercontent.com/9opi0g7gx14u4yx/mux-delete-all-assets-bash.gif)
+![delete-all-assets-bash](https://dl.dropboxusercontent.com/s/9opi0g7gx14u4yx/mux-delete-all-assets-bash.gif?dl=0)
