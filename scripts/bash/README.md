@@ -1,11 +1,11 @@
 # MUX - Delete all assets
-Scripts in a variety of languages to delete all assets from an environment
+A BASH script to delete all assets within a MUX environment
 
 ## How It Works
 
-These scripts will **DELETE ALL ASSETS** in the environment associated with the Token and Secret IDs. Please use with caution. 
+This script will **DELETE ALL ASSETS** in the environment associated with the Token and Secret IDs. Please use with caution. 
 
-**Python Requirements**
+**Bash Requirements**
 * [jq](https://stedolan.github.io/jq/download/)
 
 After cloning this repo:
@@ -13,6 +13,6 @@ After cloning this repo:
 * Run ```sh ./deleteAllAssets.sh```
 * Follow the prompt
 
-**Current set to delete 50 assets at a time**
+**Currently set to delete only 50 assets at a time**
 
-
+![delete-all-assets-bash](https://dl.dropboxusercontent.com/9opi0g7gx14u4yx/mux-delete-all-assets-bash.gif)

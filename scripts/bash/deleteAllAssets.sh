@@ -38,9 +38,12 @@ deleteAnAsset() {
     response=$?
     if [[ $response -eq 0 ]]; then
         printf "Asset Deleted ✅\n"
+        
     else
         printf "Error 👎\n"
     fi
+
+    sleep 1
 }
    
 #get the first $limit amount
