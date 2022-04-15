@@ -4,7 +4,7 @@ MUX_TOKEN_ID=''
 MUX_TOKEN_SECRET=''
 
 # finds full path to jq. If not present, echo Link to download
-jqPath=$(which jq)
+jqPath=$(command -v jq)
 if [[ $? -eq 1 ]]; then 
     echo "Please install JQ"
     echo "https://stedolan.github.io/jq/download/"
